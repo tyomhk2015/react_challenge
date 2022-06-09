@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/react_challenge/static/js/main.6bb7fece.js",
+    "main.js": "/react_challenge/static/js/main.da2affda.js",
     "index.html": "/react_challenge/index.html",
-    "main.6bb7fece.js.map": "/react_challenge/static/js/main.6bb7fece.js.map"
+    "main.da2affda.js.map": "/react_challenge/static/js/main.da2affda.js.map"
   },
   "entrypoints": [
-    "static/js/main.6bb7fece.js"
+    "static/js/main.da2affda.js"
   ]
 }
