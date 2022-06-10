@@ -1,13 +1,19 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "react-query";
-import { Link, Route, Routes, useNavigate, useParams, useMatch } from "react-router-dom";
+import { Link, Route, Routes, useNavigate, useParams} from "react-router-dom";
 import styled from "styled-components";
-import { fetchCoin, fetchCoinTickers } from "../api";
+import { fetchCoin } from "../api";
 import Chart from "./Chart";
 import Price from "./Price";
 
+const Title = styled.h1`
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+`
+
 const ReturnWrapper = styled.div`
-  position: absolute;
+  position: fixed;
   background-color: transparent;
   top: 3rem;
   left: 3rem;
@@ -18,6 +24,36 @@ const ReturnWrapper = styled.div`
   font-weight: bold;
   color: ${(props) => props.theme.textColor};
   border: 2px solid ${(props) => props.theme.textColor};
+`;
+
+const Tabs = styled.ul`
+  display: grid;
+  place-content: center;
+  margin-top: 2rem;
+  grid-template-columns: 1fr 1fr;
+  text-align: center;
+  gap: 2rem;
+  & a {
+    display: block;
+    font-size: 2rem;
+    text-decoration: none;
+    padding: 1rem;
+    color: ${(props) => props.theme.textColor}; 
+    border: 1px solid ${(props) => props.theme.textColor};
+  }
+`
+
+const Tab = styled.li`
+  transition: 0.2s all;
+  &:hover {
+    transform: scale(1.1);
+    border-style: dotted;
+    border-width: 2px;
+}
+`;
+
+const Icon = styled.svg`
+  stroke: ${(props) => props.theme.textColor}
 `;
 
 interface CoinProp {
@@ -62,8 +98,7 @@ const Coin = () => {
     <>
       <ReturnWrapper>
         <Link to="/">
-          <svg
-            stroke="#333"
+          <Icon
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -73,15 +108,21 @@ const Coin = () => {
               strokeWidth="2"
               d="M10 19l-7-7m0 0l7-7m-7 7h18"
             ></path>
-          </svg>
+          </Icon>
         </Link>
       </ReturnWrapper>
       {loading ? (<h1>Loading</h1>) : (
         <>
-          <h1>{infoData?.name} ({infoData?.symbol})</h1>
+          <Title>{infoData?.name} ({infoData?.symbol})</Title>
           <p>{infoData?.description}</p>
-          <Link to={`/${coinId}/price`}>Price</Link>
-          <Link to={`/${coinId}/chart`}>Chart</Link>
+          <Tabs>
+            <Tab>
+              <Link to={`/${coinId}/price`}>Price</Link>
+            </Tab>
+            <Tab>
+              <Link to={`/${coinId}/chart`}>Chart</Link>
+            </Tab>
+          </Tabs>
           <Routes>
             <Route path='price' element={<Price coinId={coinId!}/>} />
             <Route path='chart' element={<Chart coinId={coinId!}/>} />
