@@ -1,6 +1,14 @@
 import ApexCharts from "react-apexcharts";
 import { useQuery } from "react-query";
 import { fetchCoinTickers } from "../api";
+import styled from "styled-components";
+
+const ChartWrapper = styled.div`
+  margin-top: 2rem;
+  border: 1px solid ${(props) => props.theme.textColor};
+  border-radius: 4px;
+  background-color: rgba(0,0,0,0.5);
+`
 
 interface ICoinProp {
   coinId: string;
@@ -31,11 +39,8 @@ const Chart = ({ coinId }: ICoinProp) => {
     }
   }) as ICandleStick[];
 
-  console.log(arrangedTickers);
-
-  // console.log(tickersData);
   return (
-    <>
+    <ChartWrapper>
       {tickersLoading ? (
         "Loading chart..."
       ) : (
@@ -70,7 +75,7 @@ const Chart = ({ coinId }: ICoinProp) => {
           }}
         />
       )}
-    </>
+    </ChartWrapper>
   );
 };
 

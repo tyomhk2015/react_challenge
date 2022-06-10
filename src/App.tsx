@@ -59,7 +59,7 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const ThemeToggler = styled.button`
-  position: absolute;
+  position: fixed;
   background-color: transparent;
   bottom: 3rem;
   left: 3rem;
