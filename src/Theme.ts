@@ -9,7 +9,7 @@ const defaultTheme: DefaultTheme = {
 const darkTheme: DefaultTheme = {
   textColor: 'white',
   bgColor: '#333345',
-  accentColor: 'aqua'
+  accentColor: 'aqua',
 }
 
 export {defaultTheme, darkTheme}
