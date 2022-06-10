@@ -35,7 +35,7 @@ const Chart = ({ coinId }: ICoinProp) => {
 
   // console.log(tickersData);
   return (
-    <div>
+    <>
       {tickersLoading ? (
         "Loading chart..."
       ) : (
@@ -70,7 +70,7 @@ const Chart = ({ coinId }: ICoinProp) => {
           }}
         />
       )}
-    </div>
+    </>
   );
 };
 
