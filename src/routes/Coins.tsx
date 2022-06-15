@@ -23,6 +23,7 @@ const Coin = styled.li`
     color: ${(props) => props.theme.textColor};
   }
 `;
+
 const CoinImage = styled.img`
   width: 2rem;
   height: 2rem;
@@ -31,6 +32,16 @@ const CoinImage = styled.img`
 const CoinsWrapper = styled.ul`
   margin-top: 3rem;
 `;
+
+const TaskLink = styled.div`
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  & > a {
+    text-decoration: none;
+    color: white;
+  }
+`
 
 interface ICoinsProp {
   id: string;
@@ -64,6 +75,9 @@ const Coins = () => {
           </CoinsWrapper>
         )}
       </div>
+      <TaskLink>
+        <Link to='/task'>TASKS</Link>
+      </TaskLink>
     </>
   );
 };

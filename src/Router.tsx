@@ -7,7 +7,7 @@ const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/react_challenge/task' element={<Task/>} />
+        <Route path='/task' element={<Task/>} />
         <Route path='/:coinId/*' element={<Coin/>} />
         <Route path='/' element={<Coins/>} />
       </Routes>
