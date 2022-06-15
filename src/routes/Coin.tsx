@@ -90,7 +90,7 @@ const Coin = () => {
   // Redirect to 'coins' page if the parameter is same as the name of the project.
   useEffect(() => {
     if (coinId === "react_challenge") {
-      window.location.search === '?task' ? navigate("/task", { replace: false }) : navigate("/", { replace: false });
+      window.location.search === '?task' ? navigate("/react_challenge/task", { replace: false }) : navigate("/", { replace: false });
     }
   }, [coinId, navigate]);
 
