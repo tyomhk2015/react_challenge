@@ -8,9 +8,10 @@ export enum Category {
 }
 
 export interface ITaskProp {
-  category: 'task' | 'in_progress' | 'review' | 'done'
+  category: 'task' | 'in_progress' | 'review' | 'done' | string;
   id: number
   task: string
+  newCategory: string;
 }
 
 export const taskAtom = atom<ITaskProp[]>({

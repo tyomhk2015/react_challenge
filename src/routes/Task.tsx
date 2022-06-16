@@ -33,6 +33,13 @@ const TaskInput = styled.input.attrs(props => ({type: 'text'}))`
   font-size: 1.1rem;
 `;
 
+const CategoryInput = styled.input.attrs(props => ({type: 'text'}))`
+  padding: 0.5rem;
+  font-size: 1.1rem;
+  margin: 1rem auto 0;
+  display: block;
+`;
+
 const TaskDisplayWrapper = styled.div`
   width: 200%;
   display: grid;
@@ -62,6 +69,7 @@ const TaskDisplayWrapper = styled.div`
 
   & li {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     line-height: 2;
     border-bottom: 1px solid  ${(props) => props.theme.textColor};
@@ -88,10 +96,10 @@ const Task = () => {
   const doneTasks = useRecoilValue(doneSelector);
 
   const handleOnValid = (data: ITaskProp) => {
+    console.log(data);
     setTask((oldTask) => [{...data, id: Date.now()}, ...oldTask]);
     setValue('task', '');
   }
-  console.log(tasks);
 
   return (
     <TaskWrapper>
@@ -104,6 +112,8 @@ const Task = () => {
           <option value={Category.review}>Review</option>
           <option value={Category.done}>Done</option>
         </TaskCategorySelector>
+
+        <CategoryInput {...register("newCategory")} placeholder='Enter new category.' />
 
         <TaskInput {...register("task", {required: true})} placeholder='Enter your task' />
         <Submit>Submit</Submit>
