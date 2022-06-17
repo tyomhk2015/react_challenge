@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
-import { ITaskProp, taskAtom, taskSelector, Category, inProgressSelector, reviewSelector, doneSelector } from '../atom';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { ITaskProp, taskAtom, categoryAtom } from '../atom';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import TaskList from '../components/TaskList';
 
 const TaskWrapper = styled.div`
@@ -33,6 +33,14 @@ const TaskInput = styled.input.attrs(props => ({type: 'text'}))`
   font-size: 1.1rem;
 `;
 
+const NewCategoryWrapper = styled.div`
+  & > small {
+    display: block;
+    text-align: center;
+    margin-top: 0.2rem;
+  }
+`;
+
 const CategoryInput = styled.input.attrs(props => ({type: 'text'}))`
   padding: 0.5rem;
   font-size: 1.1rem;
@@ -41,10 +49,9 @@ const CategoryInput = styled.input.attrs(props => ({type: 'text'}))`
 `;
 
 const TaskDisplayWrapper = styled.div`
-  width: 200%;
+  width: 100%;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
   margin-top: 1rem;
   gap: 1rem;
   color: ${(props) => props.theme.textColor};
@@ -88,18 +95,42 @@ const Submit = styled.button`
 `;
 
 const Task = () => {
-  const { register, handleSubmit, setValue } = useForm<ITaskProp>();
-  const setTask = useSetRecoilState(taskAtom);
-  const tasks = useRecoilValue(taskSelector);
-  const inProgressTasks = useRecoilValue(inProgressSelector);
-  const reviewTasks = useRecoilValue(reviewSelector);
-  const doneTasks = useRecoilValue(doneSelector);
+  const { register, handleSubmit, setValue, reset } = useForm<ITaskProp>();
+  const [allTasks, setTask] = useRecoilState(taskAtom);
+  const [categories, setCategory] = useRecoilState(categoryAtom);
 
   const handleOnValid = (data: ITaskProp) => {
-    console.log(data);
+    if (data.category === categories.new && data.newCategory !== '') {
+      setCategory((oldCategory) => {
+        const newCategory = {...oldCategory};
+        newCategory[`${data.newCategory}`] = data.newCategory;
+        setValue('newCategory', '');
+        return newCategory;
+      });
+      setTask((oldTask) => [{...data, category: data.newCategory, id: Date.now()}, ...oldTask]);
+      setValue('task', '');
+      return;
+    }
+
     setTask((oldTask) => [{...data, id: Date.now()}, ...oldTask]);
     setValue('task', '');
   }
+
+  useEffect(()=> {
+    // Load tasks & categories from the local storage.
+    const tasks = JSON.parse(localStorage.getItem('tasks')!);
+    const categories = JSON.parse(localStorage.getItem('categories')!);
+    console.log(tasks, categories);
+    // setTask(
+    //   JSON.parse(localStorage.getItem('tasks'))
+    // );
+  },[]);
+
+  useEffect(()=> {
+    // Renew tasks & categories stored in local storage.
+    localStorage.setItem('tasks', JSON.stringify(allTasks));
+    localStorage.setItem('categories', JSON.stringify(categories));
+  },[allTasks, categories]);
 
   return (
     <TaskWrapper>
@@ -107,56 +138,42 @@ const Task = () => {
 
       <form onSubmit={handleSubmit(handleOnValid)}>
         <TaskCategorySelector {...register("category")}>
-          <option value={Category.task}>Task</option>
-          <option value={Category.in_progress}>In progress</option>
-          <option value={Category.review}>Review</option>
-          <option value={Category.done}>Done</option>
+          {Object.values(categories).map((category) => {
+            return (
+                <option key={category} value={category}>
+                  {category === 'new' ? 'Add a new category': category.toUpperCase()}
+                </option>
+              )
+          })}
         </TaskCategorySelector>
 
-        <CategoryInput {...register("newCategory")} placeholder='Enter new category.' />
+        <NewCategoryWrapper>
+          <CategoryInput {...register("newCategory")} placeholder='Enter new category.' />
+          <small>To register a new category, <br />please select 'Add a new category' from the above menu</small>
+        </NewCategoryWrapper>
 
         <TaskInput {...register("task", {required: true})} placeholder='Enter your task' />
         <Submit>Submit</Submit>
       </form>
 
       <TaskDisplayWrapper>
-        <div>
-          <h2>Task</h2>
           {
-            tasks &&
-              <ul>
-                {tasks.map((task, index) => <TaskList key={`${task.category}${index}`} task={task} index={index}/>)}
-              </ul>
+            Object.values(categories).map((category) => {
+              return (
+                category !== 'new' && 
+                <div key={category}>
+                  <h2>{category.toUpperCase()}</h2>
+                  <ul>
+                    {
+                      allTasks.map((task, index) => {
+                        return category === task.category && (<TaskList key={`${task.category}${index}`} task={task} index={index}/>);
+                      })
+                    }
+                  </ul>
+                </div>
+              )
+            })
           }
-        </div>
-        <div>
-          <h2>In progress</h2>
-          {
-            inProgressTasks &&
-              <ul>
-                {inProgressTasks.map((task, index) => <TaskList key={`${task.category}${index}`} task={task} index={index}/>)}
-              </ul>
-          }
-        </div>
-        <div>
-          <h2>Review</h2>
-          {
-            reviewTasks &&
-              <ul>
-                {reviewTasks.map((task, index) => <TaskList key={`${task.category}${index}`} task={task} index={index}/>)}
-              </ul>
-          }
-        </div>
-
-        <div>
-          <h2>Done</h2>
-          {
-            doneTasks &&
-              <ul>
-                {doneTasks.map((task, index) => <TaskList key={`${task.category}${index}`} task={task} index={index}/>)}
-              </ul>
-          }
-        </div>
       </TaskDisplayWrapper>
     </TaskWrapper>
   );

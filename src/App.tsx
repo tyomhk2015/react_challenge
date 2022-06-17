@@ -75,10 +75,9 @@ const ThemeToggler = styled.button`
 const Wrapper = styled.div`
   max-width: 1080px;
   width: 100%;
-  margin: 3rem auto 0;
-  padding: 2rem;
+  margin: 2rem auto 0;
+  padding: 0 1rem;
   display: grid;
-  place-content: center;
 `;
 
 function App() {
