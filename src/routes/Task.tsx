@@ -103,34 +103,43 @@ const Task = () => {
     if (data.category === categories.new && data.newCategory !== '') {
       setCategory((oldCategory) => {
         const newCategory = {...oldCategory};
+
         newCategory[`${data.newCategory}`] = data.newCategory;
         setValue('newCategory', '');
+
+        localStorage.setItem('categories', JSON.stringify(newCategory));
         return newCategory;
       });
-      setTask((oldTask) => [{...data, category: data.newCategory, id: Date.now()}, ...oldTask]);
+
+      setTask((oldTask) => {
+        const newTasks = [{...data, category: data.newCategory, id: Date.now()}, ...oldTask];
+        localStorage.setItem('tasks', JSON.stringify(newTasks));
+        return newTasks
+      });
+
       setValue('task', '');
       return;
     }
 
-    setTask((oldTask) => [{...data, id: Date.now()}, ...oldTask]);
+    setTask((oldTask) => {
+      const newTasks = [{...data, id: Date.now()}, ...oldTask];
+      localStorage.setItem('tasks', JSON.stringify(newTasks));
+      return newTasks
+    });
     setValue('task', '');
   }
 
   useEffect(()=> {
     // Load tasks & categories from the local storage.
-    const tasks = JSON.parse(localStorage.getItem('tasks')!);
-    const categories = JSON.parse(localStorage.getItem('categories')!);
-    console.log(tasks, categories);
-    // setTask(
-    //   JSON.parse(localStorage.getItem('tasks'))
-    // );
+    if (localStorage.getItem('tasks') !== null) {
+      console.log(JSON.parse(localStorage.getItem('tasks')!));
+      setTask(JSON.parse(localStorage.getItem('tasks')!));
+    }
+    if (localStorage.getItem('categories') !== null) {
+      console.log(JSON.parse(localStorage.getItem('categories')!));
+      setCategory(JSON.parse(localStorage.getItem('categories')!));
+    }
   },[]);
-
-  useEffect(()=> {
-    // Renew tasks & categories stored in local storage.
-    localStorage.setItem('tasks', JSON.stringify(allTasks));
-    localStorage.setItem('categories', JSON.stringify(categories));
-  },[allTasks, categories]);
 
   return (
     <TaskWrapper>
@@ -149,7 +158,7 @@ const Task = () => {
 
         <NewCategoryWrapper>
           <CategoryInput {...register("newCategory")} placeholder='Enter new category.' />
-          <small>To register a new category, <br />please select 'Add a new category' from the above menu</small>
+          <small>How to register a new category?<br />Please select 'Add a new category' from the menu above,<br />and write the name of the new category and a task.</small>
         </NewCategoryWrapper>
 
         <TaskInput {...register("task", {required: true})} placeholder='Enter your task' />

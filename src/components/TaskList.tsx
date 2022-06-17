@@ -22,11 +22,13 @@ const TaskList: React.FC<ITaskList> = ({task, index}) => {
       const targetTask = oldTasks.find((task) => task.id === id);
       const oldTaskPrefix = oldTasks.slice(0, targetIndex);
       const oldTaskSuffix = oldTasks.slice(targetIndex + 1);
-      return [
+      const newTasks = [
         ...oldTaskPrefix,
         {...targetTask, category: btnCategory} as ITaskProp,
         ...oldTaskSuffix
       ];
+      localStorage.setItem('tasks', JSON.stringify(newTasks));
+      return newTasks;
     });
   }
 
